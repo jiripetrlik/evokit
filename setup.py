@@ -5,5 +5,7 @@ setup(
     packages=find_packages(),
     author="Jiri Petrlik",
     author_email="jiripetrlik@gmail.com",
-    install_requires=[],
+    install_requires=[
+        "numpy>=1.21.0"
+    ],
 )
