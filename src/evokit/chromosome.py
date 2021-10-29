@@ -13,3 +13,7 @@ class NumericChromosome(Chromosome):
 
     def initialize(self):
         self.values = np.random.uniform(self.minValues, self.maxValues, len(self.values))
+
+    def renormalize(self):
+        self.values = np.maximum(self.values, self.minValues)
+        self.values = np.minimum(self.values, self.maxValues)
