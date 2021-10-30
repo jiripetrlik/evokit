@@ -17,8 +17,10 @@ def test_simulatedBinaryCrossover():
     child2 = ch.NumericChromosome(size, min, max)
     child2.initialize()
 
+    crossover = cr.SimulatedBinaryCrossover()
+
     for _ in range(100):
-        cr.simulatedBinaryCrossover(parent1, parent2, child1, child2)
+        crossover.crossover(parent1, parent2, child1, child2)
         for i in range(size):
             assert child1.values[i] >= min[i]
             assert child1.values[i] <= max[i]

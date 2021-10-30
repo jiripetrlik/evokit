@@ -1,6 +1,10 @@
 import numpy as np
 
-def normalDistributionMutation(chromosome, sd = 0.1):
-    difference = np.random.normal(scale = sd)
-    chromosome.values += difference
-    chromosome.renormalize()
+class NormalDistributionMutation:
+    def __init__(self, sd = 0.1):
+        self.sd = sd
+        
+    def mutation(self, chromosome):
+        difference = np.random.normal(scale = self.sd)
+        chromosome.values += difference
+        chromosome.renormalize()
