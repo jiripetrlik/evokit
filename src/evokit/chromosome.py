@@ -35,6 +35,13 @@ class BinaryChromosome:
 
         return result
 
+class BinaryChromosomeFactory:
+    def __init__(self, size):
+        self.size = size
+
+    def createChromosome(self):
+        return BinaryChromosome(self.size)
+
 class NumericChromosome(Chromosome):
     def __init__(self, size, minValues, maxValues):
         self.values = np.zeros(size)
