@@ -9,6 +9,32 @@ class ChromosomeFactory(ABC):
     def createChromosome(self):
         pass
 
+class BinaryChromosome:
+    def __init__(self, size):
+        self.values = np.zeros(size, dtype=np.dtype(bool))
+
+    def initialize(self):
+        self.values = np.random.choice([True, False], size = len(self.values))
+
+    def copyValues(self, originalChromosome):
+        np.copyto(self.values, originalChromosome.values)
+
+    def getInteger(self, startBit, stopBit):
+        i = 0
+        result = 0
+        while startBit + i < stopBit:
+            result += self.values[startBit + i] * (2 ** i)
+            i += 1
+
+        return result
+
+    def getFloat(self, startBit, stopBit, min, max):
+        intMax = 2 ** (stopBit - startBit) - 1
+        intValue = self.getInteger(startBit, stopBit)
+        result = ((intValue / intMax) * (max - min)) + min
+
+        return result
+
 class NumericChromosome(Chromosome):
     def __init__(self, size, minValues, maxValues):
         self.values = np.zeros(size)
