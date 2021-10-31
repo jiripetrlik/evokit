@@ -7,6 +7,7 @@ setup(
     author="Jiri Petrlik",
     author_email="jiripetrlik@gmail.com",
     install_requires=[
-        "numpy>=1.21.0"
+        "numpy>=1.21.0",
+        "matplotlib>=3.4.0"
     ],
 )

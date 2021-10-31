@@ -12,7 +12,4 @@ result = ga.geneticAlgorithm(fitness, chromosomeFactory, 100, crossover, mutatio
 
 print("Best fitness:", result["fitness"])
 print("Best solutions:", result["solution"].values)
-plt.plot(result["observer"].minFitness)
-plt.plot(result["observer"].meanFitness)
-plt.plot(result["observer"].maxFitness)
-plt.show()
+result["observer"].plot()

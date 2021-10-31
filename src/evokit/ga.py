@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class GeneticAlgorithmObserver:
     def __init__(self, iterations):
@@ -10,6 +11,15 @@ class GeneticAlgorithmObserver:
         self.minFitness[iteration] = np.min(fitnessValues)
         self.meanFitness[iteration] = np.mean(fitnessValues)
         self.maxFitness[iteration] = np.max(fitnessValues)
+
+    def plot(self):
+        plt.plot(self.minFitness, label = "Min. fitness")
+        plt.plot(self.meanFitness, label = "Mean fitness")
+        plt.plot(self.maxFitness, label = "Max. fitness")
+        plt.xlabel("Iteration")
+        plt.ylabel("Fitness")
+        plt.legend()
+        plt.show()
 
 def geneticAlgorithm(fitnessFunction, chromosomeFactory, populationSize,
         crossover, mutation, iterations, elitism = True):
