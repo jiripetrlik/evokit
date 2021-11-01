@@ -2,6 +2,44 @@ import numpy as np
 import evokit.chromosome as ch
 import evokit.crossover as cr
 
+def test_onePointCrossover():
+    np.random.seed(0)
+    size = 128
+    crossover = cr.OnePointCrossover()
+    for _ in range(100):
+        parent1 = ch.BinaryChromosome(size)
+        parent1.initialize()
+        parent2 = ch.BinaryChromosome(size)
+        parent2.initialize()
+        child1 = ch.BinaryChromosome(size)
+        child1.initialize()
+        child2 = ch.BinaryChromosome(size)
+        child2.initialize()
+
+        sumParents = np.sum(parent1.values) + np.sum(parent2.values)
+        crossover.crossover(parent1, parent2, child1, child2)
+        sumChildren = np.sum(child1.values) + np.sum(child2.values)
+        assert sumParents == sumChildren
+
+def test_uniformCrossover():
+    np.random.seed(0)
+    size = 128
+    crossover = cr.UniformCrossover()
+    for _ in range(100):
+        parent1 = ch.BinaryChromosome(size)
+        parent1.initialize()
+        parent2 = ch.BinaryChromosome(size)
+        parent2.initialize()
+        child1 = ch.BinaryChromosome(size)
+        child1.initialize()
+        child2 = ch.BinaryChromosome(size)
+        child2.initialize()
+
+        sumParents = np.sum(parent1.values) + np.sum(parent2.values)
+        crossover.crossover(parent1, parent2, child1, child2)
+        sumChildren = np.sum(child1.values) + np.sum(child2.values)
+        assert sumParents == sumChildren
+
 def test_simulatedBinaryCrossover():
     np.random.seed(0)
     size = 3

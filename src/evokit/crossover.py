@@ -1,5 +1,30 @@
 import numpy as np
 
+class OnePointCrossover:
+    def crossover(self, parent1, parent2, child1, child2):
+        size = len(parent1.values)
+
+        point = np.random.randint(0, size)
+        for i in range(point):
+            child1.values[i] = parent1.values[i]
+            child2.values[i] = parent2.values[i]
+        for i in range(point, size):
+            child1.values[i] = parent2.values[i]
+            child2.values[i] = parent1.values[i]
+
+class UniformCrossover:
+    def crossover(self, parent1, parent2, child1, child2):
+        size = len(parent1.values)
+
+        r = np.random.uniform(size = size)
+        for i in range(size):
+            if r[i] < 0.5:
+                child1.values[i] = parent1.values[i]
+                child2.values[i] = parent2.values[i]
+            else:
+                child1.values[i] = parent2.values[i]
+                child2.values[i] = parent1.values[i]
+
 class SimulatedBinaryCrossover:
     def __init__(self, nc = 2):
         self.nc = nc

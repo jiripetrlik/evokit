@@ -2,6 +2,19 @@ import numpy as np
 import evokit.chromosome as chr
 import evokit.mutation as mu
 
+def test_bitFlipMutation():
+    np.random.seed(0)
+    size = 1024
+    mutation = mu.BitFlipMutation()
+
+    chromosome = chr.BinaryChromosome(size)
+    chromosome.initialize()
+    for _ in range(100):
+        oldValues = np.copy(chromosome.values)
+        mutation.mutation(chromosome)
+        assert len(chromosome.values) == size
+        assert np.array_equal(chromosome.values, oldValues) == False
+
 def test_normalDistributionMutation():
     np.random.seed(0)
     size = 5
