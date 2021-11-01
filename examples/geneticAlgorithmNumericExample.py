@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import evokit.chromosome as chr
 import evokit.crossover as cr
 import evokit.mutation as mu
