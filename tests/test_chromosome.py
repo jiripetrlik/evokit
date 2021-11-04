@@ -1,6 +1,13 @@
 import numpy as np
 import evokit.chromosome as ch
 
+def test_binary_chromosome_factory():
+    size = 32
+    factory = ch.BinaryChromosomeFactory(size)
+    chromosome = factory.createChromosome()
+
+    assert len(chromosome.values) == size
+
 def test_initialize_binary_chromosome():
     np.random.seed(0)
 
@@ -50,6 +57,17 @@ def test_getFloat_binary_chromosome():
 
     chromosome.values = np.ones(size, dtype=np.dtype(bool))
     assert np.abs(chromosome.getFloat(64, 128, -5, 5) - 5) < 0.001
+
+def test_numeric_chromosome_factory():
+    size = 8
+    minValues = np.array([1, 2, 3, 4, 5, 6, 7, 8])
+    maxValues = np.array([2, 3, 4, 5, 6, 7, 8, 9])
+    factory = ch.NumericChromosomeFactory(size, minValues, maxValues)
+    chromosome = factory.createChromosome()
+
+    assert len(chromosome.values) == size
+    assert np.array_equal(chromosome.minValues, minValues)
+    assert np.array_equal(chromosome.maxValues, maxValues)
 
 def test_initialize_numeric_chromosome_1():
     np.random.seed(0)
