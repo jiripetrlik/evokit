@@ -45,8 +45,8 @@ class BinaryChromosomeFactory:
 class NumericChromosome(Chromosome):
     def __init__(self, size, minValues, maxValues):
         self.values = np.zeros(size)
-        self.minValues = minValues
-        self.maxValues = maxValues
+        self.minValues = np.array(minValues)
+        self.maxValues = np.array(maxValues)
 
     def initialize(self):
         self.values = np.random.uniform(self.minValues, self.maxValues, len(self.values))
