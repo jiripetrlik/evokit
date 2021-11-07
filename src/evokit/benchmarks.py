@@ -11,8 +11,8 @@ def sphereFunction(x):
     return np.sum(x ** 2)
 
 def plotBenchmark(benchmark, min = -10, max = 10):
-    x = np.arange(start = min, stop = max, step = 0.1, dtype=np.float64)
-    y = np.arange(start = min, stop = max, step = 0.1, dtype=np.float64)
+    x = np.linspace(start = min, stop = max, num = 150, dtype=np.float64)
+    y = np.linspace(start = min, stop = max, num = 150, dtype=np.float64)
     x, y = np.meshgrid(x, y)
     
     z = np.zeros(np.shape(x), dtype=np.float64)
