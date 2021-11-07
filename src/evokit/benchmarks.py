@@ -3,8 +3,15 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
+ACKLEY_FUNCTION_MIN = -30
+ACKLEY_FUNCTION_MAX = 30
 SPHERE_FUNCTION_MIN = -5.12
 SPHERE_FUNCTION_MAX = 5.12
+
+def ackleyFunction(x):
+    denominator = np.arange(start = 1, stop = len(x) + 1)
+    return (20 + np.e - 20 * np.exp(-0.2 * np.sum(x ** 2 / denominator))
+                - np.exp(np.sum(np.cos(2 * np.pi * x) / denominator)))
 
 def sphereFunction(x):
     x = np.array(x)
