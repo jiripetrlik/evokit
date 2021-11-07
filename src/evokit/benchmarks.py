@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
+SPHERE_FUNCTION_MIN = -5.12
+SPHERE_FUNCTION_MAX = 5.12
+
 def sphereFunction(x):
     x = np.array(x)
     return np.sum(x ** 2)
