@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class OnePlusOneObserver:
     def __init__(self, iterations):
@@ -8,6 +9,13 @@ class OnePlusOneObserver:
     def update(self, iteration, fitnessValue, improved):
         self.minFitness[iteration] = fitnessValue
         self.improved[iteration] = improved
+
+    def plot(self):
+        plt.plot(self.minFitness, label = "Fitness")
+        plt.xlabel("Iteration")
+        plt.ylabel("Fitness")
+        plt.legend()
+        plt.show()
 
 def onePlusOneES(fitness, size, sd, iterations):
     vector1 = np.random.normal(scale = sd, size = size)
