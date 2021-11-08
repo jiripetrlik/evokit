@@ -12,7 +12,7 @@ class OnePlusOneObserver:
 def onePlusOneES(fitness, size, sd, iterations):
     vector1 = np.random.normal(scale = sd, size = size)
     bestFintess = fitness(vector1)
-    observer = OnePlusOneObserver(size)
+    observer = OnePlusOneObserver(iterations)
     for iter in range(iterations):
         vector2 = vector1 + np.random.normal(scale = sd, size = size)
         newFitness = fitness(vector2)
