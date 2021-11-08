@@ -5,6 +5,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 ACKLEY_FUNCTION_MIN = -30
 ACKLEY_FUNCTION_MAX = 30
+ACKLEY_TEST_FUNCTION_MIN = -30
+ACKLEY_TEST_FUNCTION_MAX = 30
+ROSENBROCK_FUNCTION_MIN = -2.048
+ROSENBROCK_FUNCTION_MAX = 2.048
 SPHERE_FUNCTION_MIN = -5.12
 SPHERE_FUNCTION_MAX = 5.12
 
@@ -12,6 +16,18 @@ def ackleyFunction(x):
     denominator = np.arange(start = 1, stop = len(x) + 1)
     return (20 + np.e - 20 * np.exp(-0.2 * np.sum(x ** 2 / denominator))
                 - np.exp(np.sum(np.cos(2 * np.pi * x) / denominator)))
+
+def ackleyTestFunction(x):
+    v1 = x[:-1]
+    v2 = x[1:]
+    return np.sum(3 * (np.cos(2 * v1) + np.sin(2 * v2)) 
+                + np.exp(-0.2) * np.sqrt(v1 ** 2 + v2 ** 2))
+
+def rosenbrockFunction(x):
+    v1 = x[:-1]
+    v2 = x[1:]
+
+    return np.sum(100 * (v2 - v1 ** 2) ** 2 + (v1 - 1) ** 2)
 
 def sphereFunction(x):
     x = np.array(x)
