@@ -14,6 +14,8 @@ def main():
         help=f"Number of benchmark dimensions")
     parser.add_argument("--iterations", dest="iterations", required=True, type=int,
         help="Number of ES iterations")
+    parser.add_argument("--plot", dest="plot", action="store_true",
+        help="Plot progress of evolution")
     parser.add_argument("--strategy", dest="strategy", required=True, type=str,
         help=f"Type of ES (one of: {STRATEGIES})")
 
@@ -38,6 +40,8 @@ def main():
         sys.exit(1)
 
     print(result)
+    if args.plot == True:
+        result["observer"].plot()
 
 if __name__ == "__main__":
     main()
