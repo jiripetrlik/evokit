@@ -4,7 +4,7 @@ import evokit.es as e
 import sys
 
 BENCHMARKS = ["ackley", "ackley-test", "rosenbrock", "sphere"]
-STRATEGIES = ["oneplusone"]
+STRATEGIES = ["oneplusone", "miplusone"]
 
 def main():
     parser = argparse.ArgumentParser(description="Run evolution strategy for benchmark")
@@ -14,6 +14,8 @@ def main():
         help=f"Number of benchmark dimensions")
     parser.add_argument("--iterations", dest="iterations", required=True, type=int,
         help="Number of ES iterations")
+    parser.add_argument("--mi", dest="mi", required=False, type=int, default=8,
+        help="Parameter mi")
     parser.add_argument("--plot", dest="plot", action="store_true",
         help="Plot progress of evolution")
     parser.add_argument("--strategy", dest="strategy", required=True, type=str,
@@ -35,6 +37,8 @@ def main():
 
     if args.strategy == "oneplusone":
         result = e.onePlusOneES(benchmark, args.dimension, 0.1, args.iterations)
+    elif args.strategy == "miplusone":
+        result = e.miPlusOneES(benchmark, args.dimension, args.mi, args.iterations)
     else:
         print("Unknown evolution strategy: ", args.strategy)
         sys.exit(1)
