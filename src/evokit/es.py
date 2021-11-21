@@ -53,9 +53,18 @@ class miPlusOneObserver:
         self.maxFitness[iteration] = np.max(parentsFitness)
         self.improved[iteration] = improved
 
+    def plot(self):
+        plt.plot(self.minFitness, label = "Min. fitness")
+        plt.plot(self.meanFitness, label = "Mean fitness")
+        plt.plot(self.maxFitness, label = "Max. fitness")
+        plt.xlabel("Iteration")
+        plt.ylabel("Fitness")
+        plt.legend()
+        plt.show()
+
 def miPlusOneES(fitness, size, mi, iterations):
     parents = np.random.normal(size=(mi, size))
-    parentsSD = np.random.normal(size=(mi, size))
+    parentsSD = np.random.uniform(low = 0, high = 1, size=(mi, size))
     parentsFitness = np.apply_along_axis(fitness, 1, parents)
     worstSolution = np.argmax(parentsFitness)
     worstFitness = parentsFitness[worstSolution]
@@ -67,13 +76,14 @@ def miPlusOneES(fitness, size, mi, iterations):
         values1 = parents[sample1, range(size)]
         values2 = parents[sample2, range(size)]
         values = (values1 + values2) / 2
+        sd1 = parentsSD[sample1, range(size)]
+        sd2 = parentsSD[sample2, range(size)]
+        sd = (sd1 + sd2) / 2
+        values = values + np.random.normal(scale=sd)
+
         newFitness = fitness(values)
         improved = False
         if newFitness <= worstFitness:
-            sd1 = parentsSD[sample1, range(size)]
-            sd2 = parentsSD[sample2, range(size)]
-            sd = (sd1 + sd2) / 2
-            
             parentsFitness[worstSolution] = newFitness
             parents[worstSolution,:] = values
             parentsSD[worstSolution,:] = sd
