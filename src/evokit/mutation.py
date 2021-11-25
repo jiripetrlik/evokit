@@ -20,6 +20,6 @@ class NormalDistributionMutation:
         self.sd = sd
         
     def mutation(self, chromosome):
-        difference = np.random.normal(scale = self.sd)
+        difference = np.random.normal(scale = self.sd, size=len(chromosome.values))
         chromosome.values += difference
         chromosome.renormalize()
