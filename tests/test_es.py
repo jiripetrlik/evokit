@@ -2,6 +2,7 @@ import evokit.es as e
 import numpy as np
 
 def test_onePlusOneES():
+    np.random.seed(0)
     fitness = lambda v : ((v[0] - 1) ** 2) + (v[1] ** 2) + ((v[2] + 1) ** 2)
     iterations = 100
     
