@@ -5,6 +5,7 @@ import evokit.mutation as mu
 import evokit.ga as ga
 
 def test_geneticAlgorithm():
+    np.random.seed(0)
     fitness = lambda ch : ((ch.values[0] - 1) ** 2) + (ch.values[1] ** 2) + ((ch.values[2] + 1) ** 2)
     populationSize = 100
     chromosomeFactory = chr.NumericChromosomeFactory(3, -5000, 5000)
@@ -15,7 +16,7 @@ def test_geneticAlgorithm():
     for _ in range(3):
         result = ga.geneticAlgorithm(fitness, chromosomeFactory, populationSize,
                     crossover, mutation, iterations)
-        assert np.abs(result["fitness"]) < 0.01
+        assert result["fitness"] < 0.01
         assert np.abs(result["solution"].values[0] - 1) < 0.1
         assert np.abs(result["solution"].values[1]) < 0.1
         assert np.abs(result["solution"].values[2] + 1) < 0.1
