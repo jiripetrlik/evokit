@@ -40,7 +40,7 @@ def onePlusOneES(fitness, size, sd, iterations):
 
     return results
 
-class miPlusOneObserver:
+class miObserver:
     def __init__(self, iterations):
         self.minFitness = np.zeros(iterations)
         self.meanFitness = np.zeros(iterations)
@@ -68,7 +68,7 @@ def miPlusOneES(fitness, size, mi, iterations):
     parentsFitness = np.apply_along_axis(fitness, 1, parents)
     worstSolution = np.argmax(parentsFitness)
     worstFitness = parentsFitness[worstSolution]
-    observer = miPlusOneObserver(iterations)
+    observer = miObserver(iterations)
 
     for iter in range(iterations):
         sample1 = np.random.randint(low = 0, high = mi, size = size)
@@ -99,6 +99,44 @@ def miPlusOneES(fitness, size, mi, iterations):
     results = {
         "fitness": bestFitness,
         "solution": parents[bestSolution],
+        "observer": observer
+    }
+
+    return results
+
+def miPlusLambdaES(fitness, size, mi, l, iterations):
+    population = np.random.normal(size=(mi + l, size))
+    populationSD = np.random.uniform(low = 0, high = 1, size=(mi + l, size))
+    fitnessValues = np.zeros(shape=(mi + l))
+    fitnessValues[:mi] = np.apply_along_axis(fitness, 1, population[:mi,:])
+    observer = miObserver(iterations)
+
+    for iter in range(iterations):
+        for i in range(l):
+            sample1 = np.random.randint(low = 0, high = mi, size = size)
+            sample2 = np.random.randint(low = 0, high = mi, size = size)
+            values1 = population[sample1, range(size)]
+            values2 = population[sample2, range(size)]
+            values = (values1 + values2) / 2
+            sd1 = populationSD[sample1, range(size)]
+            sd2 = populationSD[sample2, range(size)]
+            sd = (sd1 + sd2) / 2
+            values = values + np.random.normal(scale=sd)            
+
+            population[mi + i,:] = values
+            populationSD[mi + i,:] = sd
+
+        fitnessValues[mi:] = np.apply_along_axis(fitness, 1, population[mi:,:])
+        order = np.argsort(fitnessValues)
+        
+        fitnessValues = fitnessValues[order]
+        population = population[order,:]
+        populationSD = populationSD[order,:]
+        observer.update(iter, fitnessValues[:mi], False)
+
+    results = {
+        "fitness": fitnessValues[0],
+        "solution": population[0,:],
         "observer": observer
     }
 
