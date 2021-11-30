@@ -57,7 +57,7 @@ def geneticAlgorithm(fitnessFunction, chromosomeFactory, populationSize,
             population[0].copyValues(bestSolution)
 
     fitnessValues = [fitnessFunction(chromosome) for chromosome in population]
-    observer.update(iter, fitnessValues, population)
+    observer.update(iterations, fitnessValues, population)
 
     bestSolution = np.argmin(fitnessValues)
     results = {
