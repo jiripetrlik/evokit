@@ -1,6 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+MAX_MOVING_WINDOW_SIZE = 30
+SELF_ADAPTATION_C = 0.817
+SELF_ADAPTATION_RATE = 0.2
+
 class EvolutionStrategyObserver:
     def __init__(self, iterations):
         self.minFitness = np.zeros(iterations)
@@ -25,16 +29,31 @@ class EvolutionStrategyObserver:
         plt.legend()
         plt.show()
 
-def onePlusOneES(fitness, size, sd, iterations):
+def onePlusOneES(fitness, size, sd, iterations, adaptive = True):
     vector1 = np.random.normal(scale = sd, size = size)
     bestFintess = fitness(vector1)
     observer = EvolutionStrategyObserver(iterations)
+    if adaptive == True:
+        numberOfImprovements = 0
+        if size < MAX_MOVING_WINDOW_SIZE:
+            movingWindow = size
+        else:
+            movingWindow = MAX_MOVING_WINDOW_SIZE
+
     for iter in range(iterations):
         vector2 = vector1 + np.random.normal(scale = sd, size = size)
         newFitness = fitness(vector2)
         if newFitness <= bestFintess:
             bestFintess = newFitness
             vector1 = vector2
+            if adaptive == True:
+                numberOfImprovements += 1
+        if adaptive == True and (iter + 1) % movingWindow == 0:
+            if numberOfImprovements / movingWindow > SELF_ADAPTATION_RATE:
+                sd = sd / SELF_ADAPTATION_C
+            else:
+                sd = sd * SELF_ADAPTATION_C
+            numberOfImprovements = 0
 
         observer.update(iter, [bestFintess], vector1)
         
