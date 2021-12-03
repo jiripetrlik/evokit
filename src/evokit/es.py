@@ -107,12 +107,15 @@ def miPlusOneES(fitness, size, mi, iterations):
 
     return results
 
-def miPlusLambdaES(fitness, size, mi, l, iterations):
+def miPlusLambdaES(fitness, size, mi, l, iterations, adaptive = True):
     population = np.random.normal(size=(mi + l, size))
     populationSD = np.random.uniform(low = 0, high = 1, size=(mi + l, size))
     fitnessValues = np.zeros(shape=(mi + l))
     fitnessValues[:mi] = np.apply_along_axis(fitness, 1, population[:mi,:])
     observer = EvolutionStrategyObserver(iterations)
+    if adaptive == True:
+        t1 = 1 / (np.sqrt(2 * np.sqrt(size)))
+        t2 = 1 / (np.sqrt(2 * size))
 
     for iter in range(iterations):
         for i in range(l):
@@ -124,6 +127,10 @@ def miPlusLambdaES(fitness, size, mi, l, iterations):
             sd1 = populationSD[sample1, range(size)]
             sd2 = populationSD[sample2, range(size)]
             sd = (sd1 + sd2) / 2
+            if adaptive == True:
+                rho0 = np.random.normal(size = 1)
+                rhoI = np.random.normal(size = size)
+                sd = sd * np.exp(t2 * rho0 + t1 * rhoI)
             values = values + np.random.normal(scale=sd)            
 
             population[mi + i,:] = values
