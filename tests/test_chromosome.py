@@ -124,3 +124,23 @@ def test_copyValues_numeric_chromosome():
     chromosome1.copyValues(chromosome2)
     assert chromosome1.values is not chromosome2.values
     assert np.array_equal(chromosome1.values, chromosome2.values)
+
+def test_permutation_chromosome_factory():
+    size = 32
+    factory = ch.PermutationChromosomeFactory(size)
+    chromosome = factory.createChromosome()
+    
+    assert len(chromosome.values) == size
+
+def test_initialize_permutation_chromosome():
+    np.random.seed(0)
+
+    size = 32
+    for _ in range(100):
+        chromosome = ch.PermutationChromosome(size)
+        chromosome.initialize()
+
+        assert len(chromosome.values) == size
+        assert np.all(chromosome.values >= 0)
+        assert np.all(chromosome.values < size)
+        assert len(np.unique(chromosome.values)) == size
