@@ -66,3 +66,20 @@ class NumericChromosomeFactory(ChromosomeFactory):
 
     def createChromosome(self):
         return NumericChromosome(self.size, self.minValues, self.maxValues)
+
+class PermutationChromosome(Chromosome):
+    def __init__(self, size):
+        self.values = np.random.permutation(size)
+
+    def initialize(self):
+        self.values = np.random.permutation(len(self.values))
+
+    def copyValues(self, originalChromosome):
+        np.copyto(self.values, originalChromosome.values)
+
+class PermutationChromosomeFactory(ChromosomeFactory):
+    def __init__(self, size):
+        self.size = size
+
+    def createChromosome(self):
+        return PermutationChromosome(self.size)
