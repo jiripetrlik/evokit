@@ -28,3 +28,21 @@ def test_normalDistributionMutation():
             assert chromosome.values[i] != originalValues[i]
             assert chromosome.values[i] >= chromosome.minValues
             assert chromosome.values[i] <= chromosome.maxValues
+
+def test_reciprocalExchangeMutation():
+    np.random.seed(0)
+    size = 256
+
+    changed = 0
+    mutation = mu.ReciprocalExchangeMutation()
+    for _ in range(100):
+        chromosome = chr.PermutationChromosome(size)
+        chromosome.initialize()
+        originalValues = np.copy(chromosome.values)
+        
+        mutation.mutation(chromosome)
+        assert len(np.unique(chromosome.values)) == size
+        if not np.array_equal(chromosome.values, originalValues):
+            changed += 1
+
+    assert changed > 0
