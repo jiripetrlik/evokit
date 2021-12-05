@@ -65,3 +65,32 @@ def test_simulatedBinaryCrossover():
 
             assert child2.values[i] >= min[i]
             assert child2.values[i] <= max[i]
+
+def test_partiallyMappedCrossover():
+    np.random.seed(0)
+    size = 256
+
+    changed1 = 0
+    changed2 = 0
+    for _ in range(100):
+        parent1 = ch.PermutationChromosome(size)
+        parent2 = ch.PermutationChromosome(size)
+        child1 = ch.PermutationChromosome(size)
+        child1OriginalValues = np.copy(child1.values)
+        child2 = ch.PermutationChromosome(size)
+        child2OriginalValues = np.copy(child2.values)
+
+        crossover = cr.PartiallyMappedCrossover()
+        crossover.crossover(parent1, parent2, child1, child2)
+
+        assert not np.array_equal(child1OriginalValues, child1.values)
+        assert not np.array_equal(child2OriginalValues, child2.values)
+        assert len(np.unique(child1.values)) == size
+        assert len(np.unique(child2.values)) == size
+        if not np.array_equal(child1.values, parent1.values):
+            changed1 += 1
+        if not np.array_equal(child2.values, parent2.values):
+            changed2 += 1
+
+    assert changed1 > 0
+    assert changed2 > 0
