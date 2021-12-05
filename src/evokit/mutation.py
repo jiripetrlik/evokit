@@ -23,3 +23,13 @@ class NormalDistributionMutation:
         difference = np.random.normal(scale = self.sd, size=len(chromosome.values))
         chromosome.values += difference
         chromosome.renormalize()
+
+class ReciprocalExchangeMutation:
+    def mutation(self, chromosome):
+        size = len(chromosome.values)
+        index1 = np.random.randint(size)
+        index2 = np.random.randint(size)
+
+        tmp = chromosome.values[index1]
+        chromosome.values[index1] = chromosome.values[index2]
+        chromosome.values[index2] = tmp
