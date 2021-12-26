@@ -22,7 +22,7 @@ class PsoObserver:
         plt.show()
 
 def pso(fitnessFunction, size, minValues, maxValues, populationSize, iterations):
-    observer = PsoObserver()
+    observer = PsoObserver(iterations)
     solutions = np.random.uniform(low = minValues,
                                     high = maxValues,
                                     size = (populationSize, size))
