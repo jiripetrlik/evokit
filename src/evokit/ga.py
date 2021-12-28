@@ -27,6 +27,13 @@ def geneticAlgorithm(fitnessFunction, chromosomeFactory, populationSize,
     population = [chromosomeFactory.createChromosome() for _ in range(populationSize)]
     populationNew = [chromosomeFactory.createChromosome() for _ in range(populationSize)]
     bestSolution = chromosomeFactory.createChromosome()
+    if populationSize % 2 == 0:
+        isOdd = False
+    else:
+        isOdd = True
+        dummyChromosome = chromosomeFactory.createChromosome()
+        dummyChromosome.initialize()
+
     for i in range(populationSize):
         population[i].initialize()
 
@@ -50,6 +57,12 @@ def geneticAlgorithm(fitnessFunction, chromosomeFactory, populationSize,
         for i in range(populationSize // 2):
             crossover.crossover(populationNew[parentIndex1[i]], populationNew[parentIndex2[i]],
                 population[2 * i], population[2 * i + 1])
+        if isOdd == True:
+            parent1 = np.random.randint(0, populationSize)
+            parent2 = np.random.randint(0, populationSize)
+            crossover.crossover(populationNew[parent1], populationNew[parent2],
+                population[populationSize // 2 + 1], dummyChromosome)
+
         for i in range(populationSize):
             mutation.mutation(population[i])
         
