@@ -20,6 +20,20 @@ class MultiobjectiveObserver:
         self.meanFitness[iteration,:] = np.apply_along_axis(np.mean, 0, fitnessValues)
         self.maxFitness[iteration,:] = np.apply_along_axis(np.max, 0, fitnessValues)
 
+def findNondominatedSolutions(fitnessValues):
+    size = fitnessValues.shape[0]
+    nondominatedSet = set(range(size))
+    for i in range(size):
+        better = fitnessValues > fitnessValues[i,]
+        better = np.any(better, axis = 1)
+        notWorse = fitnessValues >= fitnessValues[i,]
+        notWorse = np.all(notWorse, axis = 1)
+        dominated = np.logical_and(better, notWorse)
+        dominated = np.where(dominated)
+        nondominatedSet.difference_update(dominated)
+
+    return nondominatedSet
+
 def vega(fitnessFunctions, chromosomeFactory, populationSize,
         crossover, mutation, iterations):
     numberOfFitness = len(fitnessFunctions)
