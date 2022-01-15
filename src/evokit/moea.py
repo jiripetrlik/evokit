@@ -82,10 +82,11 @@ def vega(fitnessFunctions, chromosomeFactory, populationSize,
 
     fitnessValues = np.array([[f(s) for f in fitnessFunctions] for s in population])
     observer.update(iter, fitnessValues, population)
+    nondominated = findNondominatedSolutions(fitnessValues)
 
     results = {
         "fitnessValues": fitnessValues,
-        "solutions": population,
+        "solutions": [population[i] for i in nondominated],
         "observer": observer
     }
 
