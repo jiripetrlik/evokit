@@ -45,3 +45,28 @@ def test_weightedSumGA():
         
         assert abs(result["fitness"] - expectedFitness[i]) < 0.01
         assert abs(result["solution"].values[0] - expectedResults[i]) < 0.01
+
+def test_findNondominatedSolutions():
+    fitnessValues1 = np.array([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ])
+    result1 = m.findNondominatedSolutions(fitnessValues1)
+    assert result1 == {0, 1, 2}
+
+    fitnessValues2 = np.array([
+        [5, 1, 0],
+        [4, 1, 0],
+        [0, 0, 1],
+        [-3, 0, 2],
+    ])
+    result2 = m.findNondominatedSolutions(fitnessValues2)
+    assert result2 == {1, 2, 3}
+
+    fitnessValues3 = np.array([
+        [0.5, -1, 2.3, 4],
+        [1.2, -1, 2.7, 4]
+    ])
+    result3 = m.findNondominatedSolutions(fitnessValues3)
+    assert result3 == {0}

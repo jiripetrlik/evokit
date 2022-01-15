@@ -29,8 +29,11 @@ def findNondominatedSolutions(fitnessValues):
         notWorse = fitnessValues >= fitnessValues[i,]
         notWorse = np.all(notWorse, axis = 1)
         dominated = np.logical_and(better, notWorse)
-        dominated = np.where(dominated)
-        nondominatedSet.difference_update(dominated)
+        dominated = np.flatnonzero(dominated)
+        print(better)
+        print(notWorse)
+        print(dominated)
+        nondominatedSet.difference_update(set(dominated))
 
     return nondominatedSet
 
