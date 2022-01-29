@@ -70,3 +70,24 @@ def test_findNondominatedSolutions():
     ])
     result3 = m.findNondominatedSolutions(fitnessValues3)
     assert result3 == {0}
+
+def test_vega():
+    np.random.seed(0)
+    fitnessFunctions = [
+        lambda ch: (ch.values[0] - 1) ** 2,
+        lambda ch: (ch.values[0] + 1) ** 2
+    ]
+    populationSize = 100
+    iterations = 1000
+    chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
+    crossover = cr.SimulatedBinaryCrossover()
+    mutation = mu.NormalDistributionMutation(1)
+    
+    
+    for _ in range(3):
+        results = m.vega(fitnessFunctions, chromosomeFactory, populationSize,
+                            crossover, mutation, iterations)
+        assert results["fitnessValues"].shape[0] >= 2
+        assert results["fitnessValues"].shape[1] == 2
+        assert np.all(results["fitnessValues"] < 5)
+        assert results["fitnessValues"].shape[0] == len(results["solutions"])
