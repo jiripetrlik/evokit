@@ -37,7 +37,7 @@ def findNondominatedSolutions(fitnessValues):
 def vega(fitnessFunctions, chromosomeFactory, populationSize,
         crossover, mutation, iterations):
     numberOfFitness = len(fitnessFunctions)
-    m = np.ceil(populationSize / numberOfFitness)
+    m = int(np.ceil(populationSize / numberOfFitness))
     observer = MultiobjectiveObserver(iterations, numberOfFitness)
     population = [chromosomeFactory.createChromosome() for _ in range(populationSize)]
     populationNew = [chromosomeFactory.createChromosome() for _ in range(m * numberOfFitness)]
@@ -54,7 +54,7 @@ def vega(fitnessFunctions, chromosomeFactory, populationSize,
     for iter in range(iterations):
         fitnessValues = np.array([[f(s) for f in fitnessFunctions] for s in population])
         observer.update(iter, fitnessValues, population)
-        for i in numberOfFitness:
+        for i in range(numberOfFitness):
             tournamentIndex1 = np.random.randint(0, populationSize, m)
             tournamentIndex2 = np.random.randint(0, populationSize, m)
             for j in range(m):
@@ -82,8 +82,8 @@ def vega(fitnessFunctions, chromosomeFactory, populationSize,
     nondominated = findNondominatedSolutions(fitnessValues)
 
     results = {
-        "fitnessValues": fitnessValues,
-        "solutions": [population[i] for i in nondominated],
+        "fitnessValues": fitnessValues[tuple(nondominated),:],
+        "solutions": [population[i].values for i in nondominated],
         "observer": observer
     }
 
