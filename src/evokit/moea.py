@@ -34,6 +34,48 @@ def findNondominatedSolutions(fitnessValues):
 
     return nondominatedSet
 
+def nonDominatedSort(fitnessValues):
+    size = fitnessValues.shape[0]
+    s = [set() for _ in range(size)]
+    n = np.zeros(size)
+    rank = np.zeros(size)
+    f = set()
+
+    for p in range(size):
+        for q in range(size):
+            better = fitnessValues[p,] < fitnessValues[q,]
+            better = np.any(better)
+            notWorse = fitnessValues[p,] <= fitnessValues[q,]
+            notWorse = np.all(notWorse)
+            if np.logical_and(better, notWorse):
+                s[p].append(q)
+
+            better = fitnessValues[p,] > fitnessValues[q,]
+            better = np.any(better)
+            notWorse = fitnessValues[p,] >= fitnessValues[q,]
+            notWorse = np.all(notWorse)
+            if np.logical_and(better, notWorse):
+                n[p] += 1
+
+        if n[p] == 0:
+            rank[p] = 1
+            f.append(p)
+
+    i = 1
+    while len(f) > 0:
+        fNext = set()
+        for p in f:
+            for q in s[p]:
+                n[q] -= 1
+                if n[q] == 0:
+                    rank[q] = i + 1
+                    fNext.append(q)
+        
+        i += 1
+        f = fNext
+
+    return rank
+
 def vega(fitnessFunctions, chromosomeFactory, populationSize,
         crossover, mutation, iterations):
     numberOfFitness = len(fitnessFunctions)
