@@ -91,3 +91,24 @@ def test_vega():
         assert results["fitnessValues"].shape[1] == 2
         assert np.all(results["fitnessValues"] < 5)
         assert results["fitnessValues"].shape[0] == len(results["solutions"])
+
+def test_vegaOddPopulation():
+    np.random.seed(0)
+    fitnessFunctions = [
+        lambda ch: (ch.values[0] - 1) ** 2,
+        lambda ch: (ch.values[0] + 1) ** 2
+    ]
+    populationSize = 101
+    iterations = 1000
+    chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
+    crossover = cr.SimulatedBinaryCrossover()
+    mutation = mu.NormalDistributionMutation(1)
+    
+    
+    for _ in range(3):
+        results = m.vega(fitnessFunctions, chromosomeFactory, populationSize,
+                            crossover, mutation, iterations)
+        assert results["fitnessValues"].shape[0] >= 2
+        assert results["fitnessValues"].shape[1] == 2
+        assert np.all(results["fitnessValues"] < 5)
+        assert results["fitnessValues"].shape[0] == len(results["solutions"])
