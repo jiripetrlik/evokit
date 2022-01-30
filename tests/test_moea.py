@@ -71,6 +71,31 @@ def test_findNondominatedSolutions():
     result3 = m.findNondominatedSolutions(fitnessValues3)
     assert result3 == {0}
 
+def test_nonDominatedSort():
+    fitnessValues1 = np.array([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+    ])
+    result1 = m.nonDominatedSort(fitnessValues1)
+    assert np.array_equal(result1, [1, 1, 1])
+
+    fitnessValues2 = np.array([
+        [1, 0, 0],
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+        [3, 2, 1],
+    ])
+    result2 = m.nonDominatedSort(fitnessValues2)
+    assert np.array_equal(result2, [2, 1, 2, 2, 3])
+
+    fitnessValues3 = np.array([
+        [1, 0, 0]
+    ])
+    result3 = m.nonDominatedSort(fitnessValues3)
+    assert np.array_equal(result3, [1])
+
 def test_vega():
     np.random.seed(0)
     fitnessFunctions = [

@@ -48,7 +48,7 @@ def nonDominatedSort(fitnessValues):
             notWorse = fitnessValues[p,] <= fitnessValues[q,]
             notWorse = np.all(notWorse)
             if np.logical_and(better, notWorse):
-                s[p].append(q)
+                s[p].add(q)
 
             better = fitnessValues[p,] > fitnessValues[q,]
             better = np.any(better)
@@ -59,7 +59,7 @@ def nonDominatedSort(fitnessValues):
 
         if n[p] == 0:
             rank[p] = 1
-            f.append(p)
+            f.add(p)
 
     i = 1
     while len(f) > 0:
@@ -69,7 +69,7 @@ def nonDominatedSort(fitnessValues):
                 n[q] -= 1
                 if n[q] == 0:
                     rank[q] = i + 1
-                    fNext.append(q)
+                    fNext.add(q)
         
         i += 1
         f = fNext
