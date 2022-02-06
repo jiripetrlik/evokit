@@ -130,3 +130,91 @@ def vega(fitnessFunctions, chromosomeFactory, populationSize,
     }
 
     return results
+
+def crowdingDistanceAssignment(fitnessValues):
+    populationSize = fitnessValues.shape[0]
+    crowdingDistance = np.zeros(populationSize)
+    if populationSize < 2:
+        crowdingDistance += np.Inf
+        return crowdingDistance
+    numberOfFitness = fitnessValues.shape[1]
+    for i in range(numberOfFitness):
+        cDistance = np.zeros(populationSize)
+        fOrder = np.argsort(fitnessValues[:,i])
+        sortedValues = fitnessValues[tuple(fOrder),i]
+        fRange = sortedValues[populationSize - 1] - sortedValues[0]
+        cDistance[0] = np.Inf
+        cDistance[populationSize - 1] = np.Inf
+        leftPart = sortedValues[0:populationSize - 3]
+        rightPart = sortedValues[2:populationSize]
+        cDistance[1:populationSize - 2] += rightPart - leftPart
+
+        crowdingDistance += cDistance
+    
+    return crowdingDistance
+
+def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
+            crossover, mutation, iterations):
+    numberOfFitness = len(fitnessFunctions)
+    observer = MultiobjectiveObserver(iterations, numberOfFitness)
+    population = [chromosomeFactory.createChromosome() for _ in range(2 * populationSize)]
+    for i in range(populationSize):
+        population[i].initialize()
+    if populationSize % 2 == 0:
+        isOdd = False
+    else:
+        isOdd = True
+        dummyChromosome = chromosomeFactory.createChromosome()
+        dummyChromosome.initialize()
+    newPopulationTuple = tuple([i + populationSize for i in range(populationSize)])
+    fitnessValues = np.array([[f(s) for f in fitnessFunctions] for s in population])
+    rank = nonDominatedSort(fitnessValues)
+    order = np.argsort(rank)
+    population = [population[index] for index in order]
+
+    for iter in range(iterations):
+        parentIndex1 = np.random.randint(populationSize, size=[2, populationSize // 2])
+        parentIndex1 = np.min(parentIndex1, axis = 0)
+        parentIndex2 = np.random.randint(populationSize, size=[2, populationSize // 2])
+        parentIndex2 = np.min(parentIndex2, axis = 0)
+        for i in range(populationSize // 2):
+            crossover.crossover(population[parentIndex1], population[parentIndex2],
+                                population[populationSize + 2 * i],
+                                population[populationSize + 2 * i + 1])
+        if isOdd == True:
+            oddParent1 = np.min(np.random.randint(populationSize))
+            oddParent2 = np.min(np.random.randint(populationSize))
+            crossover.crossover(population[oddParent1],
+                                population[oddParent2],
+                                population[2 * populationSize - 1],
+                                dummyChromosome)
+        for i in range(populationSize):
+            mutation.mutation(population[i + populationSize])
+        newFitnessValues = [[f(population[i]) for f in fitnessFunctions]
+                                for i in range(populationSize)]
+        fitnessValues[newPopulationTuple,] = newFitnessValues
+        rank = nonDominatedSort(fitnessValues)
+        order = np.argsort(rank)
+        population = [population[i] for i in order]
+        fitnessValues = fitnessValues[tuple(order),]
+        rank = rank[order]
+        if rank[populationSize - 1] == rank[populationSize]:
+            subpopulation = tuple(np.where(rank == rank[populationSize - 1]).tolist())
+            subpopulationFitness = fitnessValues[subpopulation,:]
+            crowdingDistance = crowdingDistanceAssignment(subpopulationFitness)
+            cdOrder = tuple(np.argsort(crowdingDistance).flip().tolist())
+            fitnessValues[subpopulation,:] = subpopulationFitness[cdOrder,:]
+
+        observer.update(iter, fitnessValues[0:populationSize,:], population[0:populationSize])
+
+    fitnessValues = fitnessValues[0:populationSize,:]
+    population = population[0:populationSize]
+    nondominated = findNondominatedSolutions(fitnessValues)
+
+    results = {
+        "fitnessValues": fitnessValues[tuple(nondominated),:],
+        "solutions": [population[i].values for i in nondominated],
+        "observer": observer
+    }
+
+    return results    
