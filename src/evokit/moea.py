@@ -145,9 +145,9 @@ def crowdingDistanceAssignment(fitnessValues):
         fRange = sortedValues[populationSize - 1] - sortedValues[0]
         cDistance[0] = np.Inf
         cDistance[populationSize - 1] = np.Inf
-        leftPart = sortedValues[0:populationSize - 3]
-        rightPart = sortedValues[2:populationSize]
-        cDistance[1:populationSize - 2] += rightPart - leftPart
+        leftPart = sortedValues[:populationSize - 2]
+        rightPart = sortedValues[2:]
+        cDistance[1:populationSize - 1] += (rightPart - leftPart) / fRange
 
         crowdingDistance += cDistance
     
@@ -178,7 +178,7 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
         parentIndex2 = np.random.randint(populationSize, size=[2, populationSize // 2])
         parentIndex2 = np.min(parentIndex2, axis = 0)
         for i in range(populationSize // 2):
-            crossover.crossover(population[parentIndex1], population[parentIndex2],
+            crossover.crossover(population[parentIndex1[i]], population[parentIndex2[i]],
                                 population[populationSize + 2 * i],
                                 population[populationSize + 2 * i + 1])
         if isOdd == True:
@@ -199,10 +199,10 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
         fitnessValues = fitnessValues[tuple(order),]
         rank = rank[order]
         if rank[populationSize - 1] == rank[populationSize]:
-            subpopulation = tuple(np.where(rank == rank[populationSize - 1]).tolist())
+            subpopulation = tuple(np.where(rank == rank[populationSize - 1])[0].tolist())
             subpopulationFitness = fitnessValues[subpopulation,:]
             crowdingDistance = crowdingDistanceAssignment(subpopulationFitness)
-            cdOrder = tuple(np.argsort(crowdingDistance).flip().tolist())
+            cdOrder = tuple(np.flip(np.argsort(crowdingDistance)).tolist())
             fitnessValues[subpopulation,:] = subpopulationFitness[cdOrder,:]
 
         observer.update(iter, fitnessValues[0:populationSize,:], population[0:populationSize])
