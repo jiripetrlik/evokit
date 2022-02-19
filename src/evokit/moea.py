@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class WeightedSumFitness:
     def __init__(self, weights, fitnessFunctions):
@@ -33,6 +34,14 @@ def findNondominatedSolutions(fitnessValues):
         nondominatedSet.difference_update(set(dominated))
 
     return nondominatedSet
+
+def plotNondominatedSolutions(fitnessValues, firstObjective = 0, secondObjective = 1):
+    nondominated = findNondominatedSolutions(fitnessValues)
+    nonDominatedFitnessValues = fitnessValues[tuple(nondominated),:]
+    
+    plt.scatter(nonDominatedFitnessValues[:,firstObjective],
+                nonDominatedFitnessValues[:,secondObjective])
+    plt.show()
 
 def nonDominatedSort(fitnessValues):
     size = fitnessValues.shape[0]
@@ -143,6 +152,8 @@ def crowdingDistanceAssignment(fitnessValues):
         fOrder = np.argsort(fitnessValues[:,i])
         sortedValues = fitnessValues[tuple(fOrder),i]
         fRange = sortedValues[populationSize - 1] - sortedValues[0]
+        if fRange == 0:
+            fRange = 1
         cDistance[0] = np.Inf
         cDistance[populationSize - 1] = np.Inf
         leftPart = sortedValues[:populationSize - 2]
@@ -158,7 +169,7 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
     numberOfFitness = len(fitnessFunctions)
     observer = MultiobjectiveObserver(iterations, numberOfFitness)
     population = [chromosomeFactory.createChromosome() for _ in range(2 * populationSize)]
-    for i in range(populationSize):
+    for i in range(2 * populationSize):
         population[i].initialize()
     if populationSize % 2 == 0:
         isOdd = False

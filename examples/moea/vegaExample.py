@@ -15,6 +15,7 @@ def main():
 
     print("Best fitness:", result["fitnessValues"])
     print("Best solutions:", result["solutions"])
+    m.plotNondominatedSolutions(result["fitnessValues"])
 
 if __name__ == "__main__":
     main()
