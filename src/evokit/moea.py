@@ -21,6 +21,14 @@ class MultiobjectiveObserver:
         self.meanFitness[iteration,:] = np.apply_along_axis(np.mean, 0, fitnessValues)
         self.maxFitness[iteration,:] = np.apply_along_axis(np.max, 0, fitnessValues)
 
+    def plot(self):
+        for i in range(self.minFitness.shape[1]):
+            text = "Min fitness " + str(i + 1)
+            plt.plot(self.minFitness[:,i], label = text)
+        
+        plt.legend()
+        plt.show()
+
 def findNondominatedSolutions(fitnessValues):
     size = fitnessValues.shape[0]
     nondominatedSet = set(range(size))
