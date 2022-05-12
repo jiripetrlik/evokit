@@ -96,6 +96,31 @@ def test_nonDominatedSort():
     result3 = m.nonDominatedSort(fitnessValues3)
     assert np.array_equal(result3, [1])
 
+def test_crowdingDistanceAssignment():
+    fitnessValues1 = np.array([
+        [1, 0],
+        [0, 0],
+    ])
+    result1 = m.crowdingDistanceAssignment(fitnessValues1)
+    assert np.array_equal(result1, [np.Inf, np.Inf])
+
+    fitnessValues2 = np.array([
+        [6, 1],
+        [0, 0],
+        [-4, -1],
+    ])
+    result2 = m.crowdingDistanceAssignment(fitnessValues2)
+    assert np.array_equal(result2, [np.Inf, 2, np.Inf])
+
+    fitnessValues3 = np.array([
+        [6, 1],
+        [0, 0],
+        [1, 0.5],
+        [-4, -1],
+    ])
+    result3 = m.crowdingDistanceAssignment(fitnessValues3)
+    assert np.array_equal(result3, [np.Inf, 1.25, 1.1, np.Inf])
+
 def test_vega():
     np.random.seed(0)
     fitnessFunctions = [
