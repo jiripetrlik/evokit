@@ -53,30 +53,22 @@ def plotNondominatedSolutions(fitnessValues, firstObjective = 0, secondObjective
 
 def nonDominatedSort(fitnessValues):
     size = fitnessValues.shape[0]
-    s = [set() for _ in range(size)]
     n = np.zeros(size)
     rank = np.zeros(size)
-    f = set()
 
-    for p in range(size):
-        for q in range(size):
-            better = fitnessValues[p,] < fitnessValues[q,]
-            better = np.any(better)
-            notWorse = fitnessValues[p,] <= fitnessValues[q,]
-            notWorse = np.all(notWorse)
-            if np.logical_and(better, notWorse):
-                s[p].add(q)
-
-            better = fitnessValues[p,] > fitnessValues[q,]
-            better = np.any(better)
-            notWorse = fitnessValues[p,] >= fitnessValues[q,]
-            notWorse = np.all(notWorse)
-            if np.logical_and(better, notWorse):
-                n[p] += 1
-
-        if n[p] == 0:
-            rank[p] = 1
-            f.add(p)
+    a = np.repeat(fitnessValues, size, axis=0)
+    b = np.tile(fitnessValues, (size, 1))
+    isBetterArray = a < b
+    isNotWorseArray = a <= b
+    isBetter = np.apply_along_axis(np.any, 1, isBetterArray)
+    isNotWorse = np.apply_along_axis(np.all, 1, isNotWorseArray)
+    dominates = np.logical_and(isBetter, isNotWorse)
+    dominatedSets = [np.where(dominates[i * size : (i + 1) * size])[0] for i in range(size)]
+    s = [set(dSet) for dSet in dominatedSets]
+    for dSet in dominatedSets:
+        n[dSet] += 1
+    f = np.where(n == 0)[0]
+    rank[f] = 1
 
     i = 1
     while len(f) > 0:
