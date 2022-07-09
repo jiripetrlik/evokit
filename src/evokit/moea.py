@@ -168,7 +168,7 @@ def crowdingDistanceAssignment(fitnessValues):
         rightPart = sortedValues[2:]
         cDistance[1:populationSize - 1] += (rightPart - leftPart) / fRange
 
-        crowdingDistance += cDistance
+        crowdingDistance[fOrder] += cDistance
     
     return crowdingDistance
 
@@ -191,6 +191,7 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
     order = np.argsort(rank)
     population = [population[index] for index in order]
 
+    # f = open("debug.txt", "w")
     for iter in range(iterations):
         parentIndex1 = np.random.randint(populationSize, size=[2, populationSize // 2])
         parentIndex1 = np.min(parentIndex1, axis = 0)
@@ -209,7 +210,7 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
                                 dummyChromosome)
         for i in range(populationSize):
             mutation.mutation(population[i + populationSize])
-        newFitnessValues = [[f(population[i]) for f in fitnessFunctions]
+        newFitnessValues = [[f(population[populationSize + i]) for f in fitnessFunctions]
                                 for i in range(populationSize)]
         fitnessValues[newPopulationTuple,] = newFitnessValues
         rank = nonDominatedSort(fitnessValues)
@@ -217,12 +218,32 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
         population = [population[i] for i in order]
         fitnessValues = fitnessValues[tuple(order),]
         rank = rank[order]
+        # crowdingDistanceDebug = np.empty(2 * populationSize)
+        # crowdingDistanceDebug[:] = np.nan
         if rank[populationSize - 1] == rank[populationSize]:
-            subpopulation = tuple(np.where(rank == rank[populationSize - 1])[0].tolist())
-            subpopulationFitness = fitnessValues[subpopulation,:]
+            subpopulationIndex = tuple(np.where(rank == rank[populationSize - 1])[0].tolist())
+            subpopulationFitness = fitnessValues[subpopulationIndex,:]
             crowdingDistance = crowdingDistanceAssignment(subpopulationFitness)
             cdOrder = tuple(np.flip(np.argsort(crowdingDistance)).tolist())
-            fitnessValues[subpopulation,:] = subpopulationFitness[cdOrder,:]
+            fitnessValues[subpopulationIndex,:] = subpopulationFitness[cdOrder,:]
+            subpopulation = [population[subpopulationIndex[cdOrder[i]]]
+                                for i in range(len(subpopulationIndex))]
+            # crowdingDistanceDebug[np.array(subpopulationIndex)] = [crowdingDistance[cdOrder[i]]
+            #                             for i in range(len(subpopulation))]
+            for i in range(len(subpopulation)):
+                population[subpopulationIndex[i]] = subpopulation[i]
+            
+#        for i in range(2 * populationSize):
+#            debugString = str(iter) + "," + str(i)
+#            debugString += "," + str(population[i].values[0])
+#            for j in range(numberOfFitness):
+#                debugString += "," + str(fitnessValues[i,j])
+#            
+#            debugString += "," + str(rank[i])
+#            debugString += "," + str(crowdingDistanceDebug[i])
+#            debugString += "\n"
+
+#            f.write(debugString)
 
         observer.update(iter, fitnessValues[0:populationSize,:], population[0:populationSize])
 
