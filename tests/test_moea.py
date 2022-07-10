@@ -162,3 +162,43 @@ def test_vegaOddPopulation():
         assert results["fitnessValues"].shape[1] == 2
         assert np.all(results["fitnessValues"] < 5)
         assert results["fitnessValues"].shape[0] == len(results["solutions"])
+
+def test_nsga2():
+    np.random.seed(0)
+    fitnessFunctions = [
+        lambda ch: (ch.values[0] - 490) ** 2,
+        lambda ch: (ch.values[0] - 510) ** 2
+    ]
+    populationSize = 40
+    iterations = 200
+    chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
+    crossover = cr.SimulatedBinaryCrossover()
+    mutation = mu.NormalDistributionMutation(1)
+
+    for _ in range(3):
+        results = m.nsga2(fitnessFunctions, chromosomeFactory, populationSize,
+                            crossover, mutation, iterations)
+        assert results["fitnessValues"].shape[0] >= 2
+        assert results["fitnessValues"].shape[1] == 2
+        assert np.all(results["fitnessValues"] < 500)
+        assert results["fitnessValues"].shape[0] == len(results["solutions"])
+
+def test_nsga2OddPopulation():
+    np.random.seed(0)
+    fitnessFunctions = [
+        lambda ch: (ch.values[0] - 490) ** 2,
+        lambda ch: (ch.values[0] - 510) ** 2
+    ]
+    populationSize = 41
+    iterations = 200
+    chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
+    crossover = cr.SimulatedBinaryCrossover()
+    mutation = mu.NormalDistributionMutation(1)
+
+    for _ in range(3):
+        results = m.nsga2(fitnessFunctions, chromosomeFactory, populationSize,
+                            crossover, mutation, iterations)
+        assert results["fitnessValues"].shape[0] >= 2
+        assert results["fitnessValues"].shape[1] == 2
+        assert np.all(results["fitnessValues"] < 500)
+        assert results["fitnessValues"].shape[0] == len(results["solutions"])
