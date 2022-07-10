@@ -11,7 +11,7 @@ def main():
     chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
     crossover = cr.SimulatedBinaryCrossover()
     mutation = mu.NormalDistributionMutation(1)
-    result = m.nsga2(fitnessFunctions, chromosomeFactory, 100, crossover, mutation, 100)
+    result = m.nsga2(fitnessFunctions, chromosomeFactory, 50, crossover, mutation, 200)
 
     print("Best fitness:", result["fitnessValues"])
     print("Best solutions:", result["solutions"])
