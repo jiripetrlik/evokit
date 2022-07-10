@@ -63,9 +63,8 @@ def nonDominatedSort(fitnessValues):
     isBetter = np.apply_along_axis(np.any, 1, isBetterArray)
     isNotWorse = np.apply_along_axis(np.all, 1, isNotWorseArray)
     dominates = np.logical_and(isBetter, isNotWorse)
-    dominatedSets = [np.where(dominates[i * size : (i + 1) * size])[0] for i in range(size)]
-    s = [set(dSet) for dSet in dominatedSets]
-    for dSet in dominatedSets:
+    s = [np.where(dominates[i * size : (i + 1) * size])[0] for i in range(size)]
+    for dSet in s:
         n[dSet] += 1
     f = np.where(n == 0)[0]
     rank[f] = 1
