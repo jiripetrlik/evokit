@@ -1,4 +1,12 @@
 from setuptools import setup, find_packages
+
+test_deps = [
+    "pytest>=7.1.2",
+]
+extras = {
+    'test': test_deps,
+}
+
 setup(
     name="evokit",
     version="0.1",
@@ -10,4 +18,6 @@ setup(
         "numpy>=1.21.0",
         "matplotlib>=3.4.0"
     ],
+    tests_require=test_deps,
+    extras_require=extras,
 )
