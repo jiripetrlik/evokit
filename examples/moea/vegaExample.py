@@ -4,10 +4,7 @@ import evokit.mutation as mu
 import evokit.moea as m
 
 def main():
-    fitnessFunctions = [
-        lambda ch: (ch.values[0] - 1) ** 2,
-        lambda ch: (ch.values[0] + 1) ** 2
-    ]
+    fitnessFunctions = lambda ch: ((ch.values[0] - 1) ** 2, (ch.values[0] + 1) ** 2)
     chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
     crossover = cr.SimulatedBinaryCrossover()
     mutation = mu.NormalDistributionMutation(1)

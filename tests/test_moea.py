@@ -7,11 +7,7 @@ import evokit.ga as ga
 
 def test_weightedFitness():
     weights = [2, 7, 11]
-    fitnessFunctions = [
-        lambda x: x[0] ** 2 + 5,
-        lambda x: x[0] - 7,
-        lambda x: 2 * x[0] - 1
-    ]
+    fitnessFunctions = lambda x: (x[0] ** 2 + 5, x[0] - 7, 2 * x[0] - 1)
     weightedFitnessFunction = m.WeightedSumFitness(weights, fitnessFunctions)
 
     assert weightedFitnessFunction([2]) == 16
@@ -20,10 +16,7 @@ def test_weightedFitness():
 
 def test_weightedSumGA():
     np.random.seed(0)
-    fitnessFunctions = [
-        lambda x: x.values[0] ** 2,
-        lambda x: (x.values[0] - 1) ** 2
-    ]
+    fitnessFunctions = lambda x: (x.values[0] ** 2, (x.values[0] - 1) ** 2)
     weights = [
         [0, 1],
         [1, 0],
@@ -123,10 +116,7 @@ def test_crowdingDistanceAssignment():
 
 def test_vega():
     np.random.seed(0)
-    fitnessFunctions = [
-        lambda ch: (ch.values[0] - 1) ** 2,
-        lambda ch: (ch.values[0] + 1) ** 2
-    ]
+    fitnessFunctions = lambda ch: ((ch.values[0] - 1) ** 2, (ch.values[0] + 1) ** 2)
     populationSize = 100
     iterations = 1000
     chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
@@ -144,10 +134,7 @@ def test_vega():
 
 def test_vegaOddPopulation():
     np.random.seed(0)
-    fitnessFunctions = [
-        lambda ch: (ch.values[0] - 1) ** 2,
-        lambda ch: (ch.values[0] + 1) ** 2
-    ]
+    fitnessFunctions = lambda ch: ((ch.values[0] - 1) ** 2, (ch.values[0] + 1) ** 2)
     populationSize = 101
     iterations = 1000
     chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
@@ -165,10 +152,7 @@ def test_vegaOddPopulation():
 
 def test_nsga2():
     np.random.seed(0)
-    fitnessFunctions = [
-        lambda ch: (ch.values[0] - 490) ** 2,
-        lambda ch: (ch.values[0] - 510) ** 2
-    ]
+    fitnessFunctions = lambda ch: ((ch.values[0] - 490) ** 2, (ch.values[0] - 510) ** 2)
     populationSize = 40
     iterations = 200
     chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)
@@ -185,10 +169,7 @@ def test_nsga2():
 
 def test_nsga2OddPopulation():
     np.random.seed(0)
-    fitnessFunctions = [
-        lambda ch: (ch.values[0] - 490) ** 2,
-        lambda ch: (ch.values[0] - 510) ** 2
-    ]
+    fitnessFunctions = lambda ch: ((ch.values[0] - 490) ** 2, (ch.values[0] - 510) ** 2)
     populationSize = 41
     iterations = 200
     chromosomeFactory = chr.NumericChromosomeFactory(1, -5000, 5000)

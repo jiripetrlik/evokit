@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 class WeightedSumFitness:
     def __init__(self, weights, fitnessFunctions):
         self.weights = np.copy(weights)
-        self.fitnessFunctions = list(fitnessFunctions)
+        self.fitnessFunctions = fitnessFunctions
 
     def __call__(self, *args, **kwds):
-        fitnessValues = [f(args[0]) for f in self.fitnessFunctions]
+        fitnessValues = self.fitnessFunctions(args[0])
         return np.sum(self.weights * fitnessValues)
 
 class MultiobjectiveObserver:
@@ -28,6 +28,12 @@ class MultiobjectiveObserver:
         
         plt.legend()
         plt.show()
+
+def numberOfFitnessFunctions(fitnessFunctions, chromosomeFactory):
+    chromosome = chromosomeFactory.createChromosome()
+    values = fitnessFunctions(chromosome)
+    
+    return len(values)
 
 def findNondominatedSolutions(fitnessValues):
     size = fitnessValues.shape[0]
@@ -86,7 +92,7 @@ def nonDominatedSort(fitnessValues):
 
 def vega(fitnessFunctions, chromosomeFactory, populationSize,
         crossover, mutation, iterations):
-    numberOfFitness = len(fitnessFunctions)
+    numberOfFitness = numberOfFitnessFunctions(fitnessFunctions, chromosomeFactory)
     m = int(np.ceil(populationSize / numberOfFitness))
     observer = MultiobjectiveObserver(iterations, numberOfFitness)
     population = [chromosomeFactory.createChromosome() for _ in range(populationSize)]
@@ -102,7 +108,7 @@ def vega(fitnessFunctions, chromosomeFactory, populationSize,
         population[i].initialize()
 
     for iter in range(iterations):
-        fitnessValues = np.array([[f(s) for f in fitnessFunctions] for s in population])
+        fitnessValues = np.array([fitnessFunctions(s) for s in population])
         observer.update(iter, fitnessValues, population)
         for i in range(numberOfFitness):
             tournamentIndex1 = np.random.randint(0, populationSize, m)
@@ -127,7 +133,7 @@ def vega(fitnessFunctions, chromosomeFactory, populationSize,
         for i in range(populationSize):
             mutation.mutation(population[i])
 
-    fitnessValues = np.array([[f(s) for f in fitnessFunctions] for s in population])
+    fitnessValues = np.array([fitnessFunctions(s) for s in population])
     observer.update(iter, fitnessValues, population)
     nondominated = findNondominatedSolutions(fitnessValues)
 
@@ -165,7 +171,7 @@ def crowdingDistanceAssignment(fitnessValues):
 
 def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
             crossover, mutation, iterations):
-    numberOfFitness = len(fitnessFunctions)
+    numberOfFitness = numberOfFitnessFunctions(fitnessFunctions, chromosomeFactory)
     observer = MultiobjectiveObserver(iterations, numberOfFitness)
     population = [chromosomeFactory.createChromosome() for _ in range(2 * populationSize)]
     for i in range(2 * populationSize):
@@ -177,7 +183,7 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
         dummyChromosome = chromosomeFactory.createChromosome()
         dummyChromosome.initialize()
     newPopulationTuple = tuple([i + populationSize for i in range(populationSize)])
-    fitnessValues = np.array([[f(s) for f in fitnessFunctions] for s in population])
+    fitnessValues = np.array([fitnessFunctions(s) for s in population])
     rank = nonDominatedSort(fitnessValues)
     order = np.argsort(rank)
     population = [population[index] for index in order]
@@ -201,8 +207,8 @@ def nsga2(fitnessFunctions, chromosomeFactory, populationSize,
                                 dummyChromosome)
         for i in range(populationSize):
             mutation.mutation(population[i + populationSize])
-        newFitnessValues = [[f(population[populationSize + i]) for f in fitnessFunctions]
-                                for i in range(populationSize)]
+        newFitnessValues = [fitnessFunctions(population[populationSize + i])
+                            for i in range(populationSize)]
         fitnessValues[newPopulationTuple,] = newFitnessValues
         rank = nonDominatedSort(fitnessValues)
         order = np.argsort(rank)
