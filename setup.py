@@ -16,7 +16,8 @@ setup(
     author_email="jiripetrlik@gmail.com",
     install_requires=[
         "numpy>=1.21.0",
-        "matplotlib>=3.4.0"
+        "matplotlib>=3.4.0",
+        "numba>=0.56.0"
     ],
     tests_require=test_deps,
     extras_require=extras,
