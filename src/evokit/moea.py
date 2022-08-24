@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numba import njit
 
 class WeightedSumFitness:
     def __init__(self, weights, fitnessFunctions):
@@ -57,23 +58,36 @@ def plotNondominatedSolutions(fitnessValues, firstObjective = 0, secondObjective
                 nonDominatedFitnessValues[:,secondObjective])
     plt.show()
 
+@njit
 def nonDominatedSort(fitnessValues):
-    size = fitnessValues.shape[0]
-    n = np.zeros(size)
-    rank = np.zeros(size)
+    nFitness = fitnessValues.shape[1]
+    nSolutions = fitnessValues.shape[0]
+    n = np.zeros(nSolutions)
+    rank = np.zeros(nSolutions)
 
-    a = np.repeat(fitnessValues, size, axis=0)
-    b = np.tile(fitnessValues, (size, 1))
+    a = np.zeros((nSolutions * nSolutions, nFitness))
+    for i in range(nSolutions):
+        for j in range(nSolutions):
+            offset = i * nSolutions
+            a[j + offset, :] = fitnessValues[i, :]
+    b = np.zeros((nSolutions * nSolutions, nFitness))
+    for i in range(nSolutions):
+        for j in range(nSolutions):
+            offset = i * nSolutions
+            b[j + offset, :] = fitnessValues[j, :]
     isBetterArray = a < b
     isNotWorseArray = a <= b
-    isBetter = np.apply_along_axis(np.any, 1, isBetterArray)
-    isNotWorse = np.apply_along_axis(np.all, 1, isNotWorseArray)
+    isBetter = [np.any(isBetterArray[i, :]) for i in range(nSolutions * nSolutions)]
+    isBetter = np.array(isBetter)
+    isNotWorse = [np.all(isNotWorseArray[i, :]) for i in range(nSolutions * nSolutions)]
+    isNotWorse = np.array(isNotWorse)
     dominates = np.logical_and(isBetter, isNotWorse)
-    s = [np.where(dominates[i * size : (i + 1) * size])[0] for i in range(size)]
+    s = [np.where(dominates[i * nSolutions : (i + 1) * nSolutions])[0] for i in range(nSolutions)]
     for dSet in s:
         n[dSet] += 1
-    f = np.where(n == 0)[0]
-    rank[f] = 1
+    f = set(np.where(n == 0)[0])
+    for x in f:
+        rank[x] = 1
 
     i = 1
     while len(f) > 0:
